@@ -26,6 +26,17 @@ public:
     return val;
   }
 
+  std::vector<T> pop_all() {
+    std::unique_lock<std::mutex> lock(m_mutex);
+    std::vector<T> v;
+    while (!m_queue.empty()) {
+      T val = m_queue.front();
+      m_queue.pop();
+      v.push_back(val);
+    }
+    return v;
+  }
+
 private:
   std::queue<T> m_queue;
   mutable std::mutex m_mutex;
