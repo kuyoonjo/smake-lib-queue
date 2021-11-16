@@ -1,11 +1,3 @@
-# C++ Queue Library
-```c++
-
-namespace ex {
-class safe_queue; // 线程安全队列
-} // namespace ex
-```
-```c++
 #include <chrono>
 #include <ex/safe_queue.h>
 #include <iostream>
@@ -35,4 +27,3 @@ int main() {
   t2.join();
   return 0;
 }
-```
