@@ -1,7 +1,9 @@
 #pragma once
 
+#include <chrono>
 #include <condition_variable>
 #include <mutex>
+#include <optional>
 #include <queue>
 
 namespace ex {
@@ -21,6 +23,19 @@ public:
     std::unique_lock<std::mutex> lock(m_mutex);
     while (m_queue.empty())
       m_cv.wait(lock);
+    T val = m_queue.front();
+    m_queue.pop();
+    return val;
+  }
+
+  std::optional<T> try_dequeue(
+      const std::chrono::duration<long long, std::ratio<1, 1000000>> &timeout) {
+    std::unique_lock<std::mutex> lock(m_mutex);
+    while (m_queue.empty()) {
+      auto status = m_cv.wait_for(lock, timeout);
+      if (status == std::cv_status::timeout)
+        return {};
+    }
     T val = m_queue.front();
     m_queue.pop();
     return val;
