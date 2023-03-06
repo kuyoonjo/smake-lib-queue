@@ -11,3 +11,4 @@
 /.vscode
 /.ninja_log
 /compile_commands.json
+/pnpm-lock.yaml
