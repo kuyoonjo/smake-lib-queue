@@ -7,16 +7,20 @@
 #include <queue>
 
 namespace ex {
-template <class T> class safe_queue {
+template <class T, size_t capacity = 1024> class safe_queue {
 public:
   explicit safe_queue() : m_queue(), m_mutex(), m_cv() {}
 
   ~safe_queue(void) {}
 
-  void enqueue(T t) {
+  bool enqueue(T t) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_queue.push(t);
-    m_cv.notify_one();
+    if (m_queue.size() < capacity) {
+      m_queue.push(t);
+      m_cv.notify_one();
+      return true;
+    }
+    return false;
   }
 
   T dequeue() {
